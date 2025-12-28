@@ -118,6 +118,24 @@
                     <button type="submit">Add Job</button>
                 </form>
             </div>
+            <div class="table-section">
+                <h4>Current Jobs</h4>
+                <table id="jobsTable">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Salary</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
 
         </div>
 
