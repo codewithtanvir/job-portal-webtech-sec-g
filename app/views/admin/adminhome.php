@@ -24,6 +24,7 @@
 
     </div>
     <div class="main">
+    
         <div id="overview">
             <h3>Overview</h3>
             <div class="card">
@@ -51,9 +52,11 @@
                 <form id="addUserForm" onsubmit="return handleAddUser(event)">
                     <label for="newUsername">Username:</label>
                     <input type="text" id="newUsername" name="newUsername" required>
+                    <br>
 
                     <label for="newemail">Email:</label>
                     <input type="email" id="newemail" name="newemail" required>
+                    <br>
 
                     <label for="newaRole">Role:</label>
                     <select id="newaRole" name="newaRole" required>
@@ -69,8 +72,28 @@
 
                     <button type="submit">Add User</button>
                 </form>
+
+            </div>
+            <div class="table-section">
+            <h4>current users</h4>
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
             </div>
         </div>
+
 
     </div>
 </body>
