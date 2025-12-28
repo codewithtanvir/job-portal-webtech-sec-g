@@ -93,6 +93,33 @@
 
             </div>
         </div>
+        <div id="manageJobs" style="display: none;">
+            <h3>Manage Jobs</h3>
+            <div id="jobMessageArea"></div>
+            <div class="form-section">
+                <h4>Add New Job</h4>
+                <form id="addJobForm" onsubmit="return handleAddJob(event)">
+                    <label for="jobTitle">Job Title:</label>
+                    <input type="text" id="jobTitle" name="jobTitle" required>
+                    <br>
+
+                    <label for="companyName">Company</label>
+                    <input type="text" id="companyName" name="companyName" required>
+                    <br>
+
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" name="location" required>
+                    <br>
+
+                    <label for="salaryRange">Salary</label>
+                    <input type="text" id="salaryRange" name="salaryRange" required>
+                    <br>
+
+                    <button type="submit">Add Job</button>
+                </form>
+            </div>
+
+        </div>
 
 
     </div>
