@@ -11,6 +11,9 @@ switch ($page) {
     case 'job-details':
         require_once 'app/controllers/JobController.php';
         break;
+    case 'ajax-search':
+        require_once 'app/controllers/JobController.php';
+        break;
     case 'apply':
         require_once 'app/controllers/ApplicationController.php';
         break;
