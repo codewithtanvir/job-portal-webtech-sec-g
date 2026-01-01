@@ -12,7 +12,14 @@
         <nav>
             <a href="index.php">Home</a>
             <a href="?page=jobs">Jobs</a>
-            <a href="?page=applications">My Applications</a>
+            <?php if (isset($_SESSION['candidate_id'])) { ?>
+                <a href="?page=applications">My Applications</a>
+                <a href="?page=profile">Profile</a>
+                <a href="?page=logout">Logout</a>
+            <?php } else { ?>
+                <a href="?page=login">Login</a>
+                <a href="?page=apply&action=register">Register</a>
+            <?php } ?>
         </nav>
     </header>
 

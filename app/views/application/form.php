@@ -12,7 +12,14 @@
         <nav>
             <a href="index.php">Home</a>
             <a href="?page=jobs">Jobs</a>
-            <a href="?page=applications">My Applications</a>
+            <?php if (isset($_SESSION['candidate_id'])) { ?>
+                <a href="?page=applications">My Applications</a>
+                <a href="?page=profile">Profile</a>
+                <a href="?page=logout">Logout</a>
+            <?php } else { ?>
+                <a href="?page=login">Login</a>
+                <a href="?page=apply&action=register">Register</a>
+            <?php } ?>
         </nav>
     </header>
 
@@ -22,7 +29,7 @@
             <p><strong><?php echo htmlspecialchars($job['company']); ?></strong></p>
 
             <?php if (isset($error)) { ?>
-            <p style="color: red;"><?php echo $error; ?></p>
+                <p style="color: red;"><?php echo $error; ?></p>
             <?php } ?>
 
             <form method="POST" action="?page=apply&action=submit">
