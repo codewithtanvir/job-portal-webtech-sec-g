@@ -57,7 +57,7 @@
             </form>
         </div>
 
-        <div class="job-list">
+        <div class="job-list jobs-container">
             <?php
             if (mysqli_num_rows($jobs) > 0) {
                 while ($job = mysqli_fetch_assoc($jobs)) {
