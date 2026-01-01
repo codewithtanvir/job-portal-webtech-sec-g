@@ -61,7 +61,12 @@ function ajaxSearchJobs()
     $location = isset($_GET['location']) ? $_GET['location'] : '';
     $category = isset($_GET['category']) ? $_GET['category'] : '';
 
-    $jobs = searchJobs($conn, $keyword, $location, $category);
+    $result = searchJobs($conn, $keyword, $location, $category);
+    
+    $jobs = array();
+    while ($row = mysqli_fetch_assoc($result)) {
+        $jobs[] = $row;
+    }
 
     echo json_encode($jobs);
 
