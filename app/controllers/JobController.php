@@ -8,6 +8,8 @@ if ($action == 'list') {
     listJobs();
 } elseif ($action == 'search') {
     searchJobsAction();
+} elseif ($action == 'ajax-search') {
+    ajaxSearchJobs();
 } elseif ($action == 'details') {
     showJobDetails();
 }
@@ -47,4 +49,22 @@ function showJobDetails()
 
     require_once 'app/views/jobs/details.php';
     mysqli_close($conn);
+}
+
+function ajaxSearchJobs()
+{
+    header('Content-Type: application/json');
+
+    $conn = getConnection();
+
+    $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
+    $location = isset($_GET['location']) ? $_GET['location'] : '';
+    $category = isset($_GET['category']) ? $_GET['category'] : '';
+
+    $jobs = searchJobs($conn, $keyword, $location, $category);
+
+    echo json_encode($jobs);
+
+    mysqli_close($conn);
+    exit;
 }
