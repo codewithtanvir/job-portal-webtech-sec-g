@@ -70,4 +70,12 @@ body {
 .card:hover {
   transform: scale(1.05);
 }
-.card h3
+.card h3 {
+  margin: 10px 0;
+  font-size: 22px;
+  color: #2563eb;
+}
+.card p {
+  font-size: 16px;
+  color: #4b5563;
+}
