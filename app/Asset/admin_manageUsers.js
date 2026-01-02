@@ -55,22 +55,32 @@ function handleAddUser(event){
     alert('User added successfully!');
     return false;
 }
-function handleEditUser(event){
-    event.preventDefault();
-    const id = document.getElementById('editUserId').value;
-    const name = document.getElementById('editUsername').value.trim();
-    const email = document.getElementById('editEmail').value.trim();
-    const role = document.getElementById('editRole').value;
-    const row = document.querySelector(`tr[data-id='${id}']`);
+function deleteUser(btn, id) {
+    if (confirm('Are you sure you want to delete this user?')) {
+        const row = btn.closest('tr');
+        row.remove();
+        alert('User deleted successfully!');
+    }
+}
 
-    if(row){
-        row.querySelector('.user-name').textContent = username;
-        row.querySelector('.user-email').textContent = email;
-        row.querySelector('.role-badge').textContent = role;
-        row.querySelector('.role-badge').className = `role-badge ${role.toLowerCase()}`;
+function editUser(id) {
+    const row = document.querySelector(`tr[data-id="${id}"]`);
+    if (!row) return;
+    
+    const name = row.querySelector('.user-name').textContent;
+    const email = row.querySelector('.user-email').textContent;
+    const role = row.querySelector('.role-badge').textContent;
+
+    const newName = prompt('Edit Name:', name);
+    const newEmail = prompt('Edit Email:', email);
+    const newRole = prompt('Edit Role (admin, employer, jobseeker):', role.toLowerCase());
+
+    if (newName && newEmail && newRole) {
+        row.querySelector('.user-name').textContent = newName;
+        row.querySelector('.user-email').textContent = newEmail;
+        const roleBadge = row.querySelector('.role-badge');
+        roleBadge.textContent = newRole.charAt(0).toUpperCase() + newRole.slice(1);
+        roleBadge.className = `role-badge ${newRole.toLowerCase()}`;
         alert('User updated successfully!');
     }
-    closeEditModal();
-    alert('User updated successfully!');
-    return false;
 }

@@ -140,48 +140,12 @@
                 <p>Total: 0</p>
             </div>
         </div>
-
-        <div id="reports">
-            <h3>Reports</h3>
-            <p>Generate system reports.</p>
-            <button class="submit-btn">Download User Report</button>
-            <button class="submit-btn">Download Job Report</button>
-        </div>
-
-        <div id="notifications">
-            <h3>Notifications</h3>
-            <p>No new notifications.</p>
-        </div>
-
         <div id="activityLogs">
-            <h3>Activity Logs</h3>
-            <table class="users-table">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Action</th>
-                        <th>Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Admin</td>
-                        <td>Logged in</td>
-                        <td>Just now</td>
-                    </tr>
-                </tbody>
-            </table>
+
         </div>
 
         <div id="dataExport">
-            <h3>Data Export</h3>
-            <p>Export your data to various formats.</p>
-            <select>
-                <option>CSV</option>
-                <option>PDF</option>
-                <option>Excel</option>
-            </select>
-            <button class="submit-btn">Export</button>
+
         </div>
 
     </div>

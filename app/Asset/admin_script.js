@@ -24,11 +24,9 @@ function showSection(section) {
     });
 }
 
-// Show overview by default on load
 window.onload = function() {
     showSection('overview');
 
-    // Logout button handler
     const logoutBtn = document.querySelector('.logout-btn');
     if (logoutBtn) {
         logoutBtn.onclick = function() {
