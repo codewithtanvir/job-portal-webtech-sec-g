@@ -21,7 +21,7 @@ body {
 .header h2 {
   margin: 0;
 }
-.logout-button {
+.logout-btn {
   background-color: #ef4444;
   color: white;
   border: none;
@@ -70,3 +70,4 @@ body {
 .card:hover {
   transform: scale(1.05);
 }
+.card h3

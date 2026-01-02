@@ -11,6 +11,7 @@
 <body>
     <div class="header">
         <h2>Admin Dashboard - Welcome</h2>
+        <button class="logout-btn">Logout</button>
     </div>
     <div class="sidebar">
         <ul>
