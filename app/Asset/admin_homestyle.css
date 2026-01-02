@@ -52,6 +52,10 @@ body {
 .sidebar ul li:hover {
   background-color: #374151;
 }
+.sidebar ul li.active {
+  background-color: #2563eb;
+  border-left: 4px solid #ffffff;
+}
 .main {
   margin-left: 220px;
   padding: 80px 20px 20px;
@@ -78,4 +82,113 @@ body {
 .card p {
   font-size: 16px;
   color: #4b5563;
+}
+
+/* Hide all sections by default */
+#overview,
+#manageUsers,
+#manageJobs,
+#reports,
+#notifications,
+#activityLogs,
+#dataExport {
+  display: none;
+}
+
+/* Show overview by default if needed, but JS handles it now */
+#overview {
+  display: block;
+}
+/* Table Styles */
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
+}
+
+.users-table th,
+.users-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.users-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+}
+
+.role-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.role-badge.admin {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+.role-badge.employer {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+.role-badge.jobseeker {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.action-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-right: 5px;
+}
+
+.action-btn.edit {
+  background-color: #3b82f6;
+  color: white;
+}
+.action-btn.delete {
+  background-color: #ef4444;
+  color: white;
+}
+
+.submit-btn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge.active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.error {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 5px;
+}
+  background-color: #ef4444;
+  color: white;
 }

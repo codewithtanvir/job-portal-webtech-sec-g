@@ -1,12 +1,40 @@
-function ShowSection(secction){
-    document.getElementById("overview").style.display="none";
-    document.getElementById("manageUsers").style.display="none";
-    document.getElementById("manageJobs").style.display="none";
-    document.getElementById("applications").style.display="none";    
-    document.getElementById("reports").style.display="none";    
-    document.getElementById("notifications").style.display="none";    
-    document.getElementById("activityLogs").style.display="none";    
-    document.getElementById("dataExport").style.display="none";    
+function showSection(section) {
+    const sections = ['overview', 'manageUsers', 'manageJobs', 'applications', 'reports', 'notifications', 'activityLogs', 'dataExport'];
+    
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.display = "none";
+        }
+    });
 
-    document.getElementById(secction).style.display="block";
+    const target = document.getElementById(section);
+    if (target) {
+        target.style.display = "block";
+    }
+
+    // Update active state in sidebar
+    const sidebarItems = document.querySelectorAll('.sidebar ul li');
+    sidebarItems.forEach(item => {
+        if (item.getAttribute('onclick').includes(`'${section}'`)) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
 }
+
+// Show overview by default on load
+window.onload = function() {
+    showSection('overview');
+
+    // Logout button handler
+    const logoutBtn = document.querySelector('.logout-btn');
+    if (logoutBtn) {
+        logoutBtn.onclick = function() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('Logging out...');
+            }
+        };
+    }
+};
