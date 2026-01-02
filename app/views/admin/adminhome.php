@@ -88,6 +88,7 @@
 
     </div>
     <script src="../../Asset/admin_script.js"></script>
+    <script src="../../Asset/admin_manageUsers.js"></script>
 </body>
 
 </html>
