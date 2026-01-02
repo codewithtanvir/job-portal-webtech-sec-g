@@ -30,7 +30,21 @@
                 <h3></h3>
                 <p>Total Users: 0</p>
             </div>
+            <div class="card">
+                <h3></h3>
+                <p>Active Employers: 0</p>
+            </div>
+            <div class="card">
+                <h3></h3>
+                <p>job Listings: 0</p>
+            </div>
+            <div class="card">
+                <h3></h3>
+                <p>Applications: 0</p>
+            </div>
         </div>
+
+
 
 
 
