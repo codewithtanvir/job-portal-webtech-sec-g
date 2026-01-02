@@ -87,6 +87,7 @@
 
 
     </div>
+    <script src="../../Asset/admin_script.js"></script>
 </body>
 
 </html>
