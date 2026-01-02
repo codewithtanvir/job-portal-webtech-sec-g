@@ -31,7 +31,7 @@ window.onload = function() {
     if (logoutBtn) {
         logoutBtn.onclick = function() {
             if (confirm('Are you sure you want to logout?')) {
-                alert('Logging out...');
+                window.location.href = '../auth/logout.php';
             }
         };
     }

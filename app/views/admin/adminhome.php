@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../auth/login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +17,7 @@
 
 <body>
     <div class="header">
-        <h2>Admin Dashboard - Welcome</h2>
+        <h2>Admin Dashboard - Welcome, <?php echo $_SESSION['username']; ?></h2>
         <button class="logout-btn">Logout</button>
     </div>
     <div class="sidebar">
@@ -122,23 +129,11 @@
         </div>
 
         <div id="manageJobs">
-            <h3>Job Management</h3>
-            <div class="card">
-                <h3>Active Jobs</h3>
-                <p>Total: 0</p>
-            </div>
-            <div class="card">
-                <h3>Pending Approval</h3>
-                <p>Total: 0</p>
-            </div>
+
         </div>
 
         <div id="applications">
-            <h3>Applications</h3>
-            <div class="card">
-                <h3>New Apps</h3>
-                <p>Total: 0</p>
-            </div>
+
         </div>
         <div id="activityLogs">
 
