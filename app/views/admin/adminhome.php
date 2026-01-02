@@ -24,6 +24,13 @@
 
     </div>
     <div class="main">
+        <div id="overview">
+            <h3>Overview</h3>
+            <div class="card">
+                <h3></h3>
+                <p>Total Users: 0</p>
+            </div>
+        </div>
 
 
 
