@@ -55,3 +55,22 @@ function handleAddUser(event){
     alert('User added successfully!');
     return false;
 }
+function handleEditUser(event){
+    event.preventDefault();
+    const id = document.getElementById('editUserId').value;
+    const name = document.getElementById('editUsername').value.trim();
+    const email = document.getElementById('editEmail').value.trim();
+    const role = document.getElementById('editRole').value;
+    const row = document.querySelector(`tr[data-id='${id}']`);
+
+    if(row){
+        row.querySelector('.user-name').textContent = username;
+        row.querySelector('.user-email').textContent = email;
+        row.querySelector('.role-badge').textContent = role;
+        row.querySelector('.role-badge').className = `role-badge ${role.toLowerCase()}`;
+        alert('User updated successfully!');
+    }
+    closeEditModal();
+    alert('User updated successfully!');
+    return false;
+}
