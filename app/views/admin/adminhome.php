@@ -1,9 +1,16 @@
 <?php
 session_start();
+require_once('../../models/userModel.php');
+require_once('../../controllers/AdminController.php');
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../auth/login.php");
     exit();
 }
+
+$adminCtrl = new AdminController();
+$stats = $adminCtrl->getStats();
+$users = getAllUsers();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,38 +45,48 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
             <h3>Overview</h3>
             <div class="card">
                 <h3>Users</h3>
-                <p>Total Users: 0</p>
+                <p>Total Users:<?php echo $stats['users']; ?></p>
             </div>
             <div class="card">
                 <h3>Employers</h3>
-                <p>Active Employers: 0</p>
+                <p>Active Employers: 0<?php echo $stats['employers']; ?></p>
             </div>
             <div class="card">
                 <h3>Jobs</h3>
-                <p>Job Listings: 0</p>
+                <p>Job Listings:<?php echo $stats['jobs']; ?></p>
             </div>
             <div class="card">
                 <h3>Apps</h3>
-                <p>Applications: 0</p>
+                <p>Applications: <?php echo $stats['apps']; ?> </p>
             </div>
         </div>
         <div id="manageUsers">
             <h3>User Management</h3>
-            <div id="messageArea"></div>
+            <?php if (isset($_SESSION['message'])): ?>
+                <div class="success-message" style="color: green; margin-bottom: 10px;"><?php echo $_SESSION['message'];
+                                                                                        unset($_SESSION['message']); ?></div>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="error-message" style="color: red; margin-bottom: 10px;"><?php echo $_SESSION['error'];
+                                                                                    unset($_SESSION['error']); ?></div>
+            <?php endif; ?>
 
             <div class="manage-users-grid">
                 <div class="add-user-card">
                     <h4>Add New User</h4>
-                    <form id="addUserForm" onsubmit="return handleAddUser(event)">
+                    <form id="addUserForm" action="../../controllers/userController.php" method="POST">
+                        <input type="hidden" name="action" value="add">
                         <div class="input-group">
                             <label for="newUsername">Username:</label>
                             <input type="text" id="newUsername" name="newUsername" placeholder="Enter username" required>
-                            <p id="usernameError" class="error"></p>
                         </div>
                         <div class="input-group">
                             <label for="newEmail">Email:</label>
                             <input type="email" id="newEmail" name="newEmail" placeholder="Enter email" required>
-                            <p id="emailError" class="error"></p>
+                        </div>
+                        <div class="input-group">
+                            <label for="dob">Date of Birth:</label>
+                            <input type="date" id="dob" name="dob" required>
                         </div>
                         <div class="input-group">
                             <label for="newRole">Role:</label>
@@ -77,14 +94,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
                                 <option value="" disabled selected>Select role</option>
                                 <option value="admin">Admin</option>
                                 <option value="employer">Employer</option>
-                                <option value="jobseeker">Job Seeker</option>
+                                <option value="seeker">Job Seeker</option>
                             </select>
-                            <p id="roleError" class="error"></p>
                         </div>
                         <div class="input-group">
                             <label for="newPassword">Password:</label>
                             <input type="password" id="newPassword" name="newPassword" placeholder="Enter password" required>
-                            <p id="passwordError" class="error"></p>
                         </div>
                         <button type="submit" class="submit-btn">Add User</button>
                     </form>
@@ -102,26 +117,20 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
                             </tr>
                         </thead>
                         <tbody id="usersTableBody">
-                            <tr data-id="1">
-                                <td class="user-name">Admin User</td>
-                                <td class="user-email">admin@example.com</td>
-                                <td><span class="role-badge admin">Admin</span></td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <button class="action-btn edit" onclick="editUser(1)">Edit</button>
-                                    <button class="action-btn delete" onclick="deleteUser(this, 1)">Delete</button>
-                                </td>
-                            </tr>
-                            <tr data-id="2">
-                                <td class="user-name">John Doe</td>
-                                <td class="user-email">john@example.com</td>
-                                <td><span class="role-badge employer">Employer</span></td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <button class="action-btn edit" onclick="editUser(2)">Edit</button>
-                                    <button class="action-btn delete" onclick="deleteUser(this, 2)">Delete</button>
-                                </td>
-                            </tr>
+                            <?php foreach ($users as $user): ?>
+                                <tr data-id="<?php echo $user['id']; ?>">
+                                    <td class="user-name"><?php echo $user['username']; ?></td>
+                                    <td class="user-email"><?php echo $user['email']; ?></td>
+                                    <td><span class="role-badge <?php echo $user['role']; ?>"><?php echo ucfirst($user['role']); ?></span></td>
+                                    <td><span class="status-badge <?php echo $user['is_verified'] ? 'active' : 'inactive'; ?>">
+                                            <?php echo $user['is_verified'] ? 'Verified' : 'Pending'; ?>
+                                        </span></td>
+                                    <td>
+                                        <button class="action-btn edit" onclick="editUser(<?php echo $user['id']; ?>)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteUser(this, <?php echo $user['id']; ?>)">Delete</button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
@@ -129,6 +138,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
         </div>
 
         <div id="manageJobs">
+            
 
         </div>
 
