@@ -137,22 +137,6 @@ $users = getAllUsers();
             </div>
         </div>
 
-        <div id="manageJobs">
-            
-
-        </div>
-
-        <div id="applications">
-
-        </div>
-        <div id="activityLogs">
-
-        </div>
-
-        <div id="dataExport">
-
-        </div>
-
     </div>
     <script src="../../Asset/admin_script.js"></script>
     <script src="../../Asset/admin_manageUsers.js"></script>
