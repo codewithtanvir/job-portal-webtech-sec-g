@@ -32,8 +32,9 @@ function addCategory($name)
     $name = mysqli_real_escape_string($conn, $name);
     $sql = "INSERT INTO categories (name) VALUES ('$name')";
     $result = mysqli_query($conn, $sql);
+    $newId = $result ? mysqli_insert_id($conn) : false;
     mysqli_close($conn);
-    return $result;
+    return $newId;
 }
 
 function deleteCategory($id)

@@ -12,24 +12,49 @@ function category_get_all()
 function category_handle_actions()
 {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+        $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
         if ($_POST['action'] === 'createCategory') {
             $name = trim($_POST['name']);
             if (!empty($name)) {
                 if (isCategoryExists($name)) {
-                    return "Error: Category '$name' already exists.";
+                    $error = "Error: Category '$name' already exists.";
+                    if ($isAjax) {
+                        echo json_encode(['status' => 'error', 'message' => $error]);
+                        exit;
+                    }
+                    return $error;
                 }
-                if (addCategory($name)) {
+                $newId = addCategory($name);
+                if ($newId) {
+                    if ($isAjax) {
+                        echo json_encode(['status' => 'success', 'id' => $newId, 'name' => $name]);
+                        exit;
+                    }
                     return null;
                 } else {
-                    return "Error adding category.";
+                    $error = "Error adding category.";
+                    if ($isAjax) {
+                        echo json_encode(['status' => 'error', 'message' => $error]);
+                        exit;
+                    }
+                    return $error;
                 }
             }
         } elseif ($_POST['action'] === 'deleteCategory') {
             $id = (int)$_POST['id'];
             if (deleteCategory($id)) {
+                if ($isAjax) {
+                    echo json_encode(['status' => 'success', 'id' => $id]);
+                    exit;
+                }
                 return null;
             } else {
-                return "Error deleting category.";
+                $error = "Error deleting category.";
+                if ($isAjax) {
+                    echo json_encode(['status' => 'error', 'message' => $error]);
+                    exit;
+                }
+                return $error;
             }
         }
     }

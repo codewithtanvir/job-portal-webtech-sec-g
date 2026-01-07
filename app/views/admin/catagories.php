@@ -2,7 +2,7 @@
 <div class="manage-users-grid">
     <div class="add-user-card">
         <h4>Add Category</h4>
-        <form action="" method="POST">
+        <form id="addCategoryForm" action="" method="POST">
             <input type="hidden" name="action" value="createCategory">
             <div class="input-group">
                 <label for="name">Category Name:</label>
@@ -22,22 +22,18 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="categoryTableBody">
                 <?php if (empty($categories)): ?>
                     <tr>
                         <td colspan="3">No categories found.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($categories as $cat): ?>
-                        <tr>
+                        <tr id="category-row-<?php echo $cat['id']; ?>">
                             <td><?php echo $cat['id']; ?></td>
                             <td><?php echo htmlspecialchars($cat['name']); ?></td>
                             <td>
-                                <form action="" method="POST" style="display:inline;" onsubmit="return confirmDelete()">
-                                    <input type="hidden" name="action" value="deleteCategory">
-                                    <input type="hidden" name="id" value="<?php echo $cat['id']; ?>">
-                                    <button type="submit" class="action-btn delete">Delete</button>
-                                </form>
+                                <button type="button" class="action-btn delete" onclick="deleteCategoryAjax(<?php echo $cat['id']; ?>)">Delete</button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
