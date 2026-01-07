@@ -1,38 +1,38 @@
-function showSection(section) {
-    const sections = ['overview', 'manageUsers', 'manageJobs', 'applications', 'reports', 'notifications', 'activityLogs', 'dataExport'];
+function showSection(sectionId) {
+    const sectionIds = ['overview', 'manageUsers', 'catagories', 'reports', 'notifications', 'activityLogs', 'dataExport'];
     
-    sections.forEach(id => {
+    sectionIds.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-            el.style.display = "none";
+            el.style.display = (id === sectionId) ? "block" : "none";
         }
     });
 
-    const target = document.getElementById(section);
-    if (target) {
-        target.style.display = "block";
-    }
-
-    // Update active state in sidebar
     const sidebarItems = document.querySelectorAll('.sidebar ul li');
     sidebarItems.forEach(item => {
-        if (item.getAttribute('onclick').includes(`'${section}'`)) {
+        const onclickAttr = item.getAttribute('onclick');
+        if (onclickAttr && onclickAttr.includes(`'${sectionId}'`)) {
             item.classList.add('active');
         } else {
             item.classList.remove('active');
         }
     });
+
+    // Save current section to localStorage to persist across refreshes
+    localStorage.setItem('currentAdminSection', sectionId);
 }
 
-window.onload = function() {
-    showSection('overview');
+document.addEventListener('DOMContentLoaded', function() {
+    // Restore previous section or default to overview
+    const savedSection = localStorage.getItem('currentAdminSection') || 'overview';
+    showSection(savedSection);
 
     const logoutBtn = document.querySelector('.logout-btn');
     if (logoutBtn) {
-        logoutBtn.onclick = function() {
-            if (confirm('Are you sure you want to logout?')) {
-                window.location.href = '../auth/logout.php';
+        logoutBtn.onclick = function(e) {
+            if (!confirm('Are you sure you want to logout?')) {
+                e.preventDefault();
             }
         };
     }
-};
+});

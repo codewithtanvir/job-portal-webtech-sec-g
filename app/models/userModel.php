@@ -78,28 +78,10 @@ function getDashboardStats()
     $res2 = mysqli_query($conn, "SELECT COUNT(*) as total FROM users WHERE role='employer'");
     $totalEmployers = mysqli_fetch_assoc($res2)['total'];
 
-    // Total Jobs (Checking if table exists first to avoid errors)
-    $res3 = mysqli_query($conn, "SHOW TABLES LIKE 'jobs'");
-    $totalJobs = 0;
-    if (mysqli_num_rows($res3) > 0) {
-        $res3 = mysqli_query($conn, "SELECT COUNT(*) as total FROM jobs");
-        $totalJobs = mysqli_fetch_assoc($res3)['total'];
-    }
-
-    // Total Applications (Checking if table exists first)
-    $res4 = mysqli_query($conn, "SHOW TABLES LIKE 'applications'");
-    $totalApps = 0;
-    if (mysqli_num_rows($res4) > 0) {
-        $res4 = mysqli_query($conn, "SELECT COUNT(*) as total FROM applications");
-        $totalApps = mysqli_fetch_assoc($res4)['total'];
-    }
-
     mysqli_close($conn);
 
     return [
         'users' => $totalUsers,
-        'employers' => $totalEmployers,
-        'jobs' => $totalJobs,
-        'apps' => $totalApps
+        'employers' => $totalEmployers
     ];
 }
