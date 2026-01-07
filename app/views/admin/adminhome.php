@@ -1,16 +1,19 @@
 <?php
 session_start();
-require_once('../../models/userModel.php');
-require_once('../../controllers/AdminController.php');
+require_once(__DIR__ . '/../../models/userModel.php');
+require_once(__DIR__ . '/../../controllers/AdminController.php');
+require_once(__DIR__ . '/../../controllers/AdminCatControllers.php');
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../auth/login.php");
     exit();
 }
+$message = category_handle_actions();
 
 $adminCtrl = new AdminController();
 $stats = $adminCtrl->getStats();
 $users = getAllUsers();
+$categories = category_get_all();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,25 +21,23 @@ $users = getAllUsers();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Admin Dashboard</title>
     <link rel="stylesheet" href="../../Asset/admin_homestyle.css">
 </head>
 
 <body>
     <div class="header">
         <h2>Admin Dashboard - Welcome, <?php echo $_SESSION['username']; ?></h2>
-        <button class="logout-btn">Logout</button>
+        <?php if ($message): ?>
+            <span style="background: #dcfce7; color: #166534; padding: 5px 15px; border-radius: 4px; margin-left: 20px;"><?= $message ?></span>
+        <?php endif; ?>
+        <a href="../auth/logout.php" style="text-decoration: none;"><button class="logout-btn">Logout</button></a>
     </div>
     <div class="sidebar">
         <ul>
             <li onclick="showSection('overview')">Overview</li>
             <li onclick="showSection('manageUsers')">User Management</li>
-            <li onclick="showSection('manageJobs')">Job Management</li>
-            <li onclick="showSection('applications')">Applications</li>
-            <li onclick="showSection('reports')">Reports</li>
-            <li onclick="showSection('notifications')">Notifications</li>
-            <li onclick="showSection('activityLogs')">Activity Logs</li>
-            <li onclick="showSection('dataExport')">Data Export</li>
+            <li onclick="showSection('catagories')">Category Management</li>
         </ul>
 
     </div>
@@ -49,15 +50,7 @@ $users = getAllUsers();
             </div>
             <div class="card">
                 <h3>Employers</h3>
-                <p>Active Employers: 0<?php echo $stats['employers']; ?></p>
-            </div>
-            <div class="card">
-                <h3>Jobs</h3>
-                <p>Job Listings:<?php echo $stats['jobs']; ?></p>
-            </div>
-            <div class="card">
-                <h3>Apps</h3>
-                <p>Applications: <?php echo $stats['apps']; ?> </p>
+                <p>Active Employers: <?php echo $stats['employers']; ?></p>
             </div>
         </div>
         <div id="manageUsers">
@@ -137,9 +130,15 @@ $users = getAllUsers();
             </div>
         </div>
 
-    </div>
-    <script src="../../Asset/admin_script.js"></script>
-    <script src="../../Asset/admin_manageUsers.js"></script>
+        <div id="catagories" style="display:none;">
+            <?php
+            require_once(__DIR__ . '/catagories.php');
+            ?>
+
+        </div>
+        <script src="../../Asset/admin_script.js" defer></script>
+        <script src="../../Asset/admin_manageUsers.js" defer></script>
+        <script src="../../Asset/Admincat.js" defer></script>
 </body>
 
 </html>
