@@ -100,7 +100,8 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="index.php?page=applicant&action=view&id=<?php echo $application['id']; ?>" class="btn">View Details</a>
+                                        <a href="index.php?page=applicant&action=view&id=<?php echo $application['id']; ?>" class="btn">View</a>
+                                        <a href="index.php?page=applicant&action=status&id=<?php echo $application['id']; ?>" class="btn btn-success">Update Status</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

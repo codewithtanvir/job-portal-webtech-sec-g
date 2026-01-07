@@ -71,6 +71,66 @@ switch($action) {
         }
         break;
         
+    case 'shortlist':
+        if(isset($_GET['id'])) {
+            $notes = isset($_POST['notes']) ? $_POST['notes'] : '';
+            
+            if(updateApplicationStatus($_GET['id'], 'Shortlisted', $notes)) {
+                $_SESSION['success'] = "Candidate shortlisted successfully!";
+            } else {
+                $_SESSION['error'] = "Failed to shortlist candidate.";
+            }
+            
+            $application = getApplicationById($_GET['id']);
+            header('Location: index.php?page=applicant&action=list&job_id=' . $application['job_id']);
+        } else {
+            header('Location: index.php?page=job&action=list');
+        }
+        break;
+        
+    case 'reject':
+        if(isset($_GET['id'])) {
+            $notes = isset($_POST['notes']) ? $_POST['notes'] : '';
+            
+            if(updateApplicationStatus($_GET['id'], 'Rejected', $notes)) {
+                $_SESSION['success'] = "Candidate rejected.";
+            } else {
+                $_SESSION['error'] = "Failed to reject candidate.";
+            }
+            
+            $application = getApplicationById($_GET['id']);
+            header('Location: index.php?page=applicant&action=list&job_id=' . $application['job_id']);
+        } else {
+            header('Location: index.php?page=job&action=list');
+        }
+        break;
+        
+    case 'hire':
+        if(isset($_GET['id'])) {
+            $notes = isset($_POST['notes']) ? $_POST['notes'] : '';
+            
+            if(updateApplicationStatus($_GET['id'], 'Hired', $notes)) {
+                $_SESSION['success'] = "Candidate marked as hired!";
+            } else {
+                $_SESSION['error'] = "Failed to update status.";
+            }
+            
+            $application = getApplicationById($_GET['id']);
+            header('Location: index.php?page=applicant&action=list&job_id=' . $application['job_id']);
+        } else {
+            header('Location: index.php?page=job&action=list');
+        }
+        break;
+        
+    case 'status':
+        if(isset($_GET['id'])) {
+            $application = getApplicationById($_GET['id']);
+            require_once 'views/applicant/status.php';
+        } else {
+            header('Location: index.php?page=job&action=list');
+        }
+        break;
+        
     default:
         header('Location: index.php?page=job&action=list');
         break;
