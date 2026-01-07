@@ -1,0 +1,14 @@
+CREATE DATABASE IF NOT EXISTS job_portal;
+USE job_portal;
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    dob DATE NOT NULL,
+    role ENUM('admin', 'employer', 'seeker') NOT NULL,
+    otp VARCHAR(6) DEFAULT NULL,
+    is_verified TINYINT(1) DEFAULT 0,
+    reset_token VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
