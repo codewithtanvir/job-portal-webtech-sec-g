@@ -23,8 +23,37 @@
             <?php if($job): ?>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h2><?php echo $job['title']; ?></h2>
-                    <a href="index.php?page=job&action=list" class="btn">Back to Jobs</a>
+                    <div>
+                        <a href="index.php?page=job&action=edit&id=<?php echo $job['id']; ?>" class="btn btn-success">Edit Job</a>
+                        <?php if($job['status'] == 'Open'): ?>
+                            <a href="index.php?page=job&action=close&id=<?php echo $job['id']; ?>" 
+                               class="btn btn-danger" 
+                               onclick="return confirm('Are you sure you want to close this job?')">Close Job</a>
+                        <?php else: ?>
+                            <a href="index.php?page=job&action=open&id=<?php echo $job['id']; ?>" 
+                               class="btn btn-success">Reopen Job</a>
+                        <?php endif; ?>
+                        <a href="index.php?page=job&action=list" class="btn">Back to Jobs</a>
+                    </div>
                 </div>
+                
+                <?php if(isset($_SESSION['success'])): ?>
+                    <div class="alert alert-success">
+                        <?php 
+                            echo $_SESSION['success']; 
+                            unset($_SESSION['success']);
+                        ?>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if(isset($_SESSION['error'])): ?>
+                    <div class="alert alert-error">
+                        <?php 
+                            echo $_SESSION['error']; 
+                            unset($_SESSION['error']);
+                        ?>
+                    </div>
+                <?php endif; ?>
                 
                 <div class="card">
                     <h3>Job Details</h3>

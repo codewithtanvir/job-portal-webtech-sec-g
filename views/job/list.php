@@ -73,6 +73,12 @@
                                 <td><?php echo date('M d, Y', strtotime($job['posted_date'])); ?></td>
                                 <td>
                                     <a href="index.php?page=job&action=view&id=<?php echo $job['id']; ?>" class="btn">View</a>
+                                    <a href="index.php?page=job&action=edit&id=<?php echo $job['id']; ?>" class="btn btn-success">Edit</a>
+                                    <?php if($job['status'] == 'Open'): ?>
+                                        <a href="index.php?page=job&action=close&id=<?php echo $job['id']; ?>" 
+                                           class="btn btn-danger" 
+                                           onclick="return confirm('Close this job?')">Close</a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
