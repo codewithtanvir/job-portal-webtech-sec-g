@@ -79,6 +79,12 @@
                     <h3>Requirements</h3>
                     <p><?php echo nl2br($job['requirements']); ?></p>
                 </div>
+                
+                <div class="card">
+                    <h3>Manage Applications</h3>
+                    <a href="index.php?page=applicant&action=list&job_id=<?php echo $job['id']; ?>" class="btn btn-success">View All Applicants</a>
+                    <a href="index.php?page=applicant&action=apply&job_id=<?php echo $job['id']; ?>" class="btn">Apply for This Job</a>
+                </div>
             <?php else: ?>
                 <div class="alert alert-error">Job not found.</div>
                 <a href="index.php?page=job&action=list" class="btn">Back to Jobs</a>
