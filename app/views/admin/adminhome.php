@@ -1,17 +1,15 @@
 <?php
 session_start();
 require_once(__DIR__ . '/../../models/userModel.php');
-require_once(__DIR__ . '/../../controllers/AdminController.php');
 require_once(__DIR__ . '/../../controllers/AdminCatControllers.php');
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../auth/login.php");
     exit();
 }
-$message = category_handle_actions();
 
-$adminCtrl = new AdminController();
-$stats = $adminCtrl->getStats();
+$message = category_handle_actions();
+$stats = getDashboardStats();
 $users = getAllUsers();
 $categories = category_get_all();
 ?>
