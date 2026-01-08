@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             };
 
-            xhttp.open("POST", "../../Controllers/UserController.php", true);
+            xhttp.open("POST", "../controllers/AdminUserController.php", true);
             xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
             xhttp.send(formData);
         };
@@ -71,7 +71,7 @@ function deleteUser(btn, id) {
                 }
             }
         };
-        xhttp.open("POST", "../../Controllers/UserController.php", true);             
+        xhttp.open("POST", "../controllers/AdminUserController.php", true);             
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("action=delete&id=" + id);
     }
@@ -95,7 +95,7 @@ function editUser(id) {
         formData.append('username', newName);
         formData.append('email', newEmail);
         formData.append('role', newRole);
-        fetch('../../Controllers/UserController.php', {
+        fetch('../controllers/AdminUserController.php', {
             method: 'POST',
             body: formData
         })

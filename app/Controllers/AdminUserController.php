@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once(__DIR__ . '/../Models/UserModel.php');
+require_once(__DIR__ . '/../models/AdminUserModel.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['error'] = $errorMsg;
                 }
             }
-            header("Location: ../Views/admin/AdminHome.php");
+            header("Location: ../views/home.php");
             exit();
         }
 

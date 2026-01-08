@@ -12,7 +12,7 @@
     <div class="manage-users-grid">
         <div class="add-user-card">
             <h4>Add New User</h4>
-            <form id="addUserForm" action="../../controllers/AdminUserController.php" method="POST">
+            <form id="addUserForm" action="../controllers/AdminUserController.php" method="POST">
                 <input type="hidden" name="action" value="add">
                 <div class="input-group">
                     <label for="newUsername">Username:</label>

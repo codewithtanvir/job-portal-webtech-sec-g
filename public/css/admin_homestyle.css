@@ -84,14 +84,12 @@ body {
   color: #4b5563;
 }
 
-/* Hide all sections by default */
 #overview,
 #manageUsers,
-#manageJobs {
+#categories {
   display: none;
 }
 
-/* Show overview by default if needed, but JS handles it now */
 #overview {
   display: block;
 }

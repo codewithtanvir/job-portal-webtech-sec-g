@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require_once(__DIR__ . '/../Models/CategoryModel.php');
+require_once(__DIR__ . '/../models/AdminCategoryModel.php');
 
 function category_get_all()
 {
