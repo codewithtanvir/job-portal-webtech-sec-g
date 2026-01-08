@@ -1,227 +1,197 @@
 <?php
 
-class Validator
+$validation_errors = [];
+
+function validate_email($email, $fieldName = 'Email')
 {
-    private $errors = [];
+    global $validation_errors;
+    $email = trim($email);
 
-    /**
-     * Validate email format
-     */
-    public function validateEmail($email, $fieldName = 'Email')
-    {
-        $email = trim($email);
-
-        if (empty($email)) {
-            $this->errors[] = "$fieldName is required";
-            return false;
-        }
-
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->errors[] = "$fieldName must be a valid email address";
-            return false;
-        }
-
-        if (strlen($email) > 255) {
-            $this->errors[] = "$fieldName is too long";
-            return false;
-        }
-
-        return true;
+    if (empty($email)) {
+        $validation_errors[] = "$fieldName is required";
+        return false;
     }
 
-    /**
-     * Validate password strength
-     */
-    public function validatePassword($password, $fieldName = 'Password')
-    {
-        if (empty($password)) {
-            $this->errors[] = "$fieldName is required";
-            return false;
-        }
-
-        if (strlen($password) < 8) {
-            $this->errors[] = "$fieldName must be at least 8 characters long";
-            return false;
-        }
-
-        if (!preg_match('/[A-Z]/', $password)) {
-            $this->errors[] = "$fieldName must contain at least one uppercase letter";
-            return false;
-        }
-
-        if (!preg_match('/[a-z]/', $password)) {
-            $this->errors[] = "$fieldName must contain at least one lowercase letter";
-            return false;
-        }
-
-        if (!preg_match('/\d/', $password)) {
-            $this->errors[] = "$fieldName must contain at least one number";
-            return false;
-        }
-
-        return true;
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $validation_errors[] = "$fieldName must be a valid email address";
+        return false;
     }
 
-    /**
-     * Validate required text field
-     */
-    public function validateRequired($value, $fieldName, $minLength = 1, $maxLength = 255)
-    {
-        $value = trim($value);
-
-        if (empty($value)) {
-            $this->errors[] = "$fieldName is required";
-            return false;
-        }
-
-        if (strlen($value) < $minLength) {
-            $this->errors[] = "$fieldName must be at least $minLength characters";
-            return false;
-        }
-
-        if (strlen($value) > $maxLength) {
-            $this->errors[] = "$fieldName must not exceed $maxLength characters";
-            return false;
-        }
-
-        return true;
+    if (strlen($email) > 255) {
+        $validation_errors[] = "$fieldName is too long";
+        return false;
     }
 
-    /**
-     * Validate phone number
-     */
-    public function validatePhone($phone, $fieldName = 'Phone')
-    {
-        $phone = trim($phone);
+    return true;
+}
 
-        if (empty($phone)) {
-            $this->errors[] = "$fieldName is required";
+function validate_password($password, $fieldName = 'Password')
+{
+    global $validation_errors;
+
+    if (empty($password)) {
+        $validation_errors[] = "$fieldName is required";
+        return false;
+    }
+
+    if (strlen($password) < 8) {
+        $validation_errors[] = "$fieldName must be at least 8 characters long";
+        return false;
+    }
+
+    if (!preg_match('/[A-Z]/', $password)) {
+        $validation_errors[] = "$fieldName must contain at least one uppercase letter";
+        return false;
+    }
+
+    if (!preg_match('/[a-z]/', $password)) {
+        $validation_errors[] = "$fieldName must contain at least one lowercase letter";
+        return false;
+    }
+
+    if (!preg_match('/\d/', $password)) {
+        $validation_errors[] = "$fieldName must contain at least one number";
+        return false;
+    }
+
+    return true;
+}
+
+function validate_required($value, $fieldName, $minLength = 1, $maxLength = 255)
+{
+    global $validation_errors;
+    $value = trim($value);
+
+    if (empty($value)) {
+        $validation_errors[] = "$fieldName is required";
+        return false;
+    }
+
+    if (strlen($value) < $minLength) {
+        $validation_errors[] = "$fieldName must be at least $minLength characters";
+        return false;
+    }
+
+    if (strlen($value) > $maxLength) {
+        $validation_errors[] = "$fieldName must not exceed $maxLength characters";
+        return false;
+    }
+
+    return true;
+}
+
+function validate_phone($phone, $fieldName = 'Phone')
+{
+    global $validation_errors;
+    $phone = trim($phone);
+
+    if (empty($phone)) {
+        $validation_errors[] = "$fieldName is required";
+        return false;
+    }
+
+    $cleanPhone = preg_replace('/[\s\-\(\)\+]/', '', $phone);
+
+    if (!preg_match('/^\d{10,15}$/', $cleanPhone)) {
+        $validation_errors[] = "$fieldName must be a valid phone number (10-15 digits)";
+        return false;
+    }
+
+    return true;
+}
+
+function validate_file($file, $fieldName, $allowedTypes = [], $maxSize = 5242880)
+{
+    global $validation_errors;
+
+    if (!isset($file) || $file['error'] === UPLOAD_ERR_NO_FILE) {
+        $validation_errors[] = "$fieldName is required";
+        return false;
+    }
+
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        $validation_errors[] = "Error uploading $fieldName";
+        return false;
+    }
+
+    if ($file['size'] > $maxSize) {
+        $maxSizeMB = $maxSize / (1024 * 1024);
+        $validation_errors[] = "$fieldName must not exceed {$maxSizeMB}MB";
+        return false;
+    }
+
+    if (!empty($allowedTypes)) {
+        $fileExt = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $mimeType = mime_content_type($file['tmp_name']);
+
+        if (!in_array($fileExt, $allowedTypes)) {
+            $validation_errors[] = "$fieldName must be one of: " . implode(', ', $allowedTypes);
             return false;
         }
 
-        // Remove common formatting characters
-        $cleanPhone = preg_replace('/[\s\-\(\)\+]/', '', $phone);
-
-        if (!preg_match('/^\d{10,15}$/', $cleanPhone)) {
-            $this->errors[] = "$fieldName must be a valid phone number (10-15 digits)";
+        if ($fileExt === 'pdf' && $mimeType !== 'application/pdf') {
+            $validation_errors[] = "$fieldName must be a valid PDF file";
             return false;
         }
-
-        return true;
     }
 
-    /**
-     * Validate file upload
-     */
-    public function validateFile($file, $fieldName, $allowedTypes = [], $maxSize = 5242880)
-    {
-        if (!isset($file) || $file['error'] === UPLOAD_ERR_NO_FILE) {
-            $this->errors[] = "$fieldName is required";
-            return false;
-        }
+    return true;
+}
 
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            $this->errors[] = "Error uploading $fieldName";
-            return false;
-        }
+function validate_integer($value, $fieldName, $min = null, $max = null)
+{
+    global $validation_errors;
 
-        // Check file size
-        if ($file['size'] > $maxSize) {
-            $maxSizeMB = $maxSize / (1024 * 1024);
-            $this->errors[] = "$fieldName must not exceed {$maxSizeMB}MB";
-            return false;
-        }
-
-        // Check file type
-        if (!empty($allowedTypes)) {
-            $fileExt = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            $mimeType = mime_content_type($file['tmp_name']);
-
-            if (!in_array($fileExt, $allowedTypes)) {
-                $this->errors[] = "$fieldName must be one of: " . implode(', ', $allowedTypes);
-                return false;
-            }
-
-            // Verify PDF mime type
-            if ($fileExt === 'pdf' && $mimeType !== 'application/pdf') {
-                $this->errors[] = "$fieldName must be a valid PDF file";
-                return false;
-            }
-        }
-
-        return true;
+    if (!is_numeric($value) || $value != (int)$value) {
+        $validation_errors[] = "$fieldName must be a valid number";
+        return false;
     }
 
-    /**
-     * Validate integer
-     */
-    public function validateInteger($value, $fieldName, $min = null, $max = null)
-    {
-        if (!is_numeric($value) || $value != (int)$value) {
-            $this->errors[] = "$fieldName must be a valid number";
-            return false;
-        }
+    $value = (int)$value;
 
-        $value = (int)$value;
-
-        if ($min !== null && $value < $min) {
-            $this->errors[] = "$fieldName must be at least $min";
-            return false;
-        }
-
-        if ($max !== null && $value > $max) {
-            $this->errors[] = "$fieldName must not exceed $max";
-            return false;
-        }
-
-        return true;
+    if ($min !== null && $value < $min) {
+        $validation_errors[] = "$fieldName must be at least $min";
+        return false;
     }
 
-    /**
-     * Sanitize string input
-     */
-    public function sanitizeString($value)
-    {
-        return htmlspecialchars(trim($value), ENT_QUOTES, 'UTF-8');
+    if ($max !== null && $value > $max) {
+        $validation_errors[] = "$fieldName must not exceed $max";
+        return false;
     }
 
-    /**
-     * Sanitize email
-     */
-    public function sanitizeEmail($email)
-    {
-        return filter_var(trim($email), FILTER_SANITIZE_EMAIL);
-    }
+    return true;
+}
 
-    /**
-     * Get all validation errors
-     */
-    public function getErrors()
-    {
-        return $this->errors;
-    }
+function sanitize_string($value)
+{
+    return htmlspecialchars(trim($value), ENT_QUOTES, 'UTF-8');
+}
 
-    /**
-     * Check if there are any errors
-     */
-    public function hasErrors()
-    {
-        return !empty($this->errors);
-    }
+function sanitize_email($email)
+{
+    return filter_var(trim($email), FILTER_SANITIZE_EMAIL);
+}
 
-    /**
-     * Get first error
-     */
-    public function getFirstError()
-    {
-        return $this->hasErrors() ? $this->errors[0] : null;
-    }
+function get_validation_errors()
+{
+    global $validation_errors;
+    return $validation_errors;
+}
 
-    /**
-     * Clear all errors
-     */
-    public function clearErrors()
-    {
-        $this->errors = [];
-    }
+function has_validation_errors()
+{
+    global $validation_errors;
+    return !empty($validation_errors);
+}
+
+function get_first_validation_error()
+{
+    global $validation_errors;
+    return !empty($validation_errors) ? $validation_errors[0] : null;
+}
+
+function clear_validation_errors()
+{
+    global $validation_errors;
+    $validation_errors = [];
 }
