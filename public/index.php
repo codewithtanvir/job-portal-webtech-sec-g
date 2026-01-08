@@ -1,28 +1,30 @@
 <?php
-// public/index.php
+// Main index file - front controller
+// all requests go through this file
+
 session_start();
+
+// include database connection
 require_once '../config/db.php';
 
-$url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : 'home';
+// get the page from url
+$page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
-// Basic procedural routing
-switch ($url) {
+// routing logic
+switch ($page) {
     case 'home':
-        require_once '../app/views/home.php';
+        include '../app/views/home.php';
         break;
+
     case 'register':
-        require_once '../app/controllers/UserController.php';
-        register();
+        include '../app/views/register.php';
         break;
+
     case 'login':
-        require_once '../app/controllers/UserController.php';
-        login();
+        include '../app/views/login.php';
         break;
-    case 'logout':
-        require_once '../app/controllers/UserController.php';
-        logout();
-        break;
+
     default:
-        echo "404 Page Not Found";
+        include '../app/views/home.php';
         break;
 }
