@@ -7,6 +7,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" href="../../Asset/admin_homestyle.css">
+<link rel="stylesheet" href="../../Asset/admin_userStyle.css" />
 
 <head>
     <meta charset="UTF-8">
