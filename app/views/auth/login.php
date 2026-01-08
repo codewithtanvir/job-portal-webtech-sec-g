@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (isset($_SESSION['user_id'])) {
-    header("Location: ../admin/adminhome.php");
+    header("Location: ../admin/AdminHome.php");
     exit();
 }
 ?>
@@ -22,7 +22,7 @@ if (isset($_SESSION['user_id'])) {
             <p style="color: red; text-align: center;"><?php echo $_SESSION['error'];
                                                         unset($_SESSION['error']); ?></p>
         <?php endif; ?>
-        <form action="../../controllers/AuthController.php" method="POST">
+        <form action="../../Controllers/AuthController.php" method="POST">
             <div class="input-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required value="<?php echo isset($_COOKIE['user_login']) ? $_COOKIE['user_login'] : ''; ?>">
