@@ -43,6 +43,13 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
                 <p>Active Employers: <?php echo $stats['employers']; ?></p>
             </div>
         </div>
+        <?php
+        require_once(__DIR__ . '/AdminUserManagement.php');
+        ?>
+        <?php
+        require_once(__DIR__ . '/AdminCategoryManagement.php');
+        ?>
+    </div>
 
 </body>
 
