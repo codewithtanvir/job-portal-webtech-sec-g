@@ -24,6 +24,18 @@ switch ($page) {
         include '../app/views/login.php';
         break;
 
+    case 'jobseeker-dashboard':
+        include '../app/views/jobseeker-dashboard.php';
+        break;
+
+    case 'employer-dashboard':
+        include '../app/views/employer-dashboard.php';
+        break;
+
+    case 'admin-dashboard':
+        include '../app/views/admin-dashboard.php';
+        break;
+
     default:
         include '../app/views/home.php';
         break;
