@@ -226,29 +226,29 @@ if ($action == 'reset-password') {
 // handle email verification
 if ($action == 'verify-email') {
     $token = isset($_GET['token']) ? $_GET['token'] : '';
-    
+
     if (empty($token)) {
         $_SESSION['error'] = "Invalid verification link";
         header("Location: ../../public/index.php?page=login");
         exit();
     }
-    
+
     // check if token is valid
     $user = getUserByVerificationToken($conn, $token);
-    
+
     if (!$user) {
         $_SESSION['error'] = "Invalid or expired verification token";
         header("Location: ../../public/index.php?page=login");
         exit();
     }
-    
+
     // check if already verified
     if ($user['is_verified'] == 1) {
         $_SESSION['success'] = "Email already verified. You can login now";
         header("Location: ../../public/index.php?page=login");
         exit();
     }
-    
+
     // verify email
     if (verifyUserEmail($conn, $token)) {
         $_SESSION['success'] = "Email verified successfully! Please wait for admin approval to login";
@@ -259,5 +259,3 @@ if ($action == 'verify-email') {
     }
     exit();
 }
-
-?>
