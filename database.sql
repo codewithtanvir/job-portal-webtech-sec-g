@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS users (
     full_name VARCHAR(100) NOT NULL,
     user_type ENUM('admin', 'employer', 'jobseeker') NOT NULL,
     status ENUM('pending', 'approved', 'banned') DEFAULT 'pending',
+    is_verified TINYINT(1) DEFAULT 0,
+    verification_token VARCHAR(100),
     reset_token VARCHAR(100),
     reset_token_expiry DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

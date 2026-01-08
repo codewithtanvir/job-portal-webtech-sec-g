@@ -62,8 +62,11 @@ if ($action == 'register') {
     }
 
     // create user
-    if (createUser($conn, $username, $email, $password, $full_name, $user_type)) {
-        $_SESSION['success'] = "Registration successful! Please wait for admin approval";
+    $verification_token = createUser($conn, $username, $email, $password, $full_name, $user_type);
+    if ($verification_token) {
+        // in real app, send email with verification link
+        // for now, show the link in success message
+        $_SESSION['success'] = "Registration successful! Verification link: index.php?page=verify-email&token=" . $verification_token;
         header("Location: ../../public/index.php?page=login");
         exit();
     } else {
@@ -219,3 +222,42 @@ if ($action == 'reset-password') {
     }
     exit();
 }
+
+// handle email verification
+if ($action == 'verify-email') {
+    $token = isset($_GET['token']) ? $_GET['token'] : '';
+    
+    if (empty($token)) {
+        $_SESSION['error'] = "Invalid verification link";
+        header("Location: ../../public/index.php?page=login");
+        exit();
+    }
+    
+    // check if token is valid
+    $user = getUserByVerificationToken($conn, $token);
+    
+    if (!$user) {
+        $_SESSION['error'] = "Invalid or expired verification token";
+        header("Location: ../../public/index.php?page=login");
+        exit();
+    }
+    
+    // check if already verified
+    if ($user['is_verified'] == 1) {
+        $_SESSION['success'] = "Email already verified. You can login now";
+        header("Location: ../../public/index.php?page=login");
+        exit();
+    }
+    
+    // verify email
+    if (verifyUserEmail($conn, $token)) {
+        $_SESSION['success'] = "Email verified successfully! Please wait for admin approval to login";
+        header("Location: ../../public/index.php?page=login");
+    } else {
+        $_SESSION['error'] = "Email verification failed. Please try again";
+        header("Location: ../../public/index.php?page=login");
+    }
+    exit();
+}
+
+?>

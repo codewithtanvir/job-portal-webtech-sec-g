@@ -7,18 +7,21 @@ function createUser($conn, $username, $email, $password, $full_name, $user_type)
     // hash the password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
+    // generate verification token
+    $verification_token = bin2hex(random_bytes(32));
+
     // prepare sql query
-    $sql = "INSERT INTO users (username, email, password, full_name, user_type, status)
-            VALUES (?, ?, ?, ?, ?, 'pending')";
+    $sql = "INSERT INTO users (username, email, password, full_name, user_type, status, verification_token)
+            VALUES (?, ?, ?, ?, ?, 'pending', ?)";
 
     // use prepared statement to prevent sql injection
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "sssss", $username, $email, $hashed_password, $full_name, $user_type);
+    mysqli_stmt_bind_param($stmt, "ssssss", $username, $email, $hashed_password, $full_name, $user_type, $verification_token);
 
     // execute query
     if (mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
-        return true;
+        return $verification_token;
     } else {
         mysqli_stmt_close($stmt);
         return false;
@@ -144,6 +147,41 @@ function updatePassword($conn, $user_id, $new_password)
     if (mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
         return true;
+    } else {
+        mysqli_stmt_close($stmt);
+        return false;
+    }
+}
+
+function verifyUserEmail($conn, $token)
+{
+    // verify token and update user status
+    $sql = "UPDATE users SET is_verified = 1, verification_token = NULL WHERE verification_token = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $token);
+
+    if (mysqli_stmt_execute($stmt)) {
+        $affected = mysqli_stmt_affected_rows($stmt);
+        mysqli_stmt_close($stmt);
+        return $affected > 0;
+    } else {
+        mysqli_stmt_close($stmt);
+        return false;
+    }
+}
+
+function getUserByVerificationToken($conn, $token)
+{
+    $sql = "SELECT * FROM users WHERE verification_token = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $token);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if (mysqli_num_rows($result) > 0) {
+        $user = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+        return $user;
     } else {
         mysqli_stmt_close($stmt);
         return false;
