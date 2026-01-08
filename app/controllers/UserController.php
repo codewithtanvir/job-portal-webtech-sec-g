@@ -2,7 +2,8 @@
 // app/controllers/UserController.php
 require_once '../app/models/UserModel.php';
 
-function register() {
+function register()
+{
     global $conn;
     if (isset($_POST['btnRegister'])) {
         $name = $_POST['name'];
@@ -21,7 +22,8 @@ function register() {
     }
 }
 
-function login() {
+function login()
+{
     global $conn;
     if (isset($_POST['btnLogin'])) {
         $email = $_POST['email'];
@@ -42,9 +44,9 @@ function login() {
     }
 }
 
-function logout() {
+function logout()
+{
     session_destroy();
     header("Location: login");
     exit();
 }
-?>
