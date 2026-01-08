@@ -1,0 +1,5 @@
+# add newdir folder
+newdir/
+# ignore all .log files
+*.log
+

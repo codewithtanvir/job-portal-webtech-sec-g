@@ -4,6 +4,7 @@
 <head>
     <title>Apply for Job - Job Portal</title>
     <link rel="stylesheet" href="public/css/style.css">
+    <script src="public/js/validation.js" defer></script>
 </head>
 
 <body>

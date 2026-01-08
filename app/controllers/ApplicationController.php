@@ -3,6 +3,7 @@
 require_once 'app/models/Application.php';
 require_once 'app/models/Candidate.php';
 require_once 'app/models/Job.php';
+require_once 'app/helpers/Validator.php';
 
 $action = isset($_GET['action']) ? $_GET['action'] : 'list';
 
@@ -40,16 +41,43 @@ function submitApplication()
         return;
     }
 
+    $validator = new Validator();
     $conn = getConnection();
 
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $job_id = $_POST['job_id'];
+    // Validate and sanitize inputs
+    $email = $validator->sanitizeEmail($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $job_id = $_POST['job_id'] ?? '';
+
+    // Validate email
+    $validator->validateEmail($email);
+
+    // Validate password exists
+    if (empty($password)) {
+        $validator->validateRequired($password, 'Password');
+    }
+
+    // Validate job ID
+    $validator->validateInteger($job_id, 'Job ID', 1);
+
+    // If validation fails, show errors
+    if ($validator->hasErrors()) {
+        $error = $validator->getFirstError();
+        $job = getJobById($conn, $job_id);
+        require_once 'app/views/application/form.php';
+        mysqli_close($conn);
+        return;
+    }
+
+    // Escape for SQL query
+    $email = mysqli_real_escape_string($conn, $email);
+    $job_id = mysqli_real_escape_string($conn, $job_id);
 
     $candidate = getCandidateByEmail($conn, $email);
 
     if (!$candidate) {
         $error = "Invalid email or password";
+        $job = getJobById($conn, $job_id);
         require_once 'app/views/application/form.php';
         mysqli_close($conn);
         return;
@@ -57,6 +85,7 @@ function submitApplication()
 
     if (!password_verify($password, $candidate['password'])) {
         $error = "Invalid email or password";
+        $job = getJobById($conn, $job_id);
         require_once 'app/views/application/form.php';
         mysqli_close($conn);
         return;
@@ -64,6 +93,7 @@ function submitApplication()
 
     if (empty($candidate['resume_path'])) {
         $error = "Please upload your resume first";
+        $job = getJobById($conn, $job_id);
         require_once 'app/views/application/form.php';
         mysqli_close($conn);
         return;
@@ -76,6 +106,7 @@ function submitApplication()
         header('Location: ?page=applications');
     } else {
         $error = "You have already applied for this job";
+        $job = getJobById($conn, $job_id);
         require_once 'app/views/application/form.php';
     }
 
@@ -89,12 +120,31 @@ function registerCandidate()
         return;
     }
 
+    $validator = new Validator();
     $conn = getConnection();
 
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $password = $_POST['password'];
+    // Sanitize inputs
+    $name = $validator->sanitizeString($_POST['name'] ?? '');
+    $email = $validator->sanitizeEmail($_POST['email'] ?? '');
+    $phone = $_POST['phone'] ?? '';
+    $password = $_POST['password'] ?? '';
+
+    // Validate all fields
+    $validator->validateRequired($name, 'Name', 2, 255);
+    $validator->validateEmail($email);
+    $validator->validatePhone($phone);
+    $validator->validatePassword($password);
+
+    // If validation fails, show errors
+    if ($validator->hasErrors()) {
+        $error = $validator->getFirstError();
+        require_once 'app/views/candidate/register.php';
+        mysqli_close($conn);
+        return;
+    }
+
+    // Escape for SQL query
+    $email = mysqli_real_escape_string($conn, $email);
 
     $existing = getCandidateByEmail($conn, $email);
 
@@ -135,33 +185,54 @@ function uploadResume()
         return;
     }
 
+    $validator = new Validator();
     $conn = getConnection();
     $candidate = getCandidateById($conn, $_SESSION['candidate_id']);
 
-    if (isset($_FILES['resume']) && $_FILES['resume']['error'] == 0) {
-        $file_name = $_FILES['resume']['name'];
-        $file_tmp = $_FILES['resume']['tmp_name'];
-        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-
-        if ($file_ext != 'pdf') {
-            $error = "Only PDF files are allowed";
-            require_once 'app/views/candidate/resume.php';
-            mysqli_close($conn);
-            return;
-        }
-
-        $new_file_name = 'resume_' . $_SESSION['candidate_id'] . '_' . time() . '.pdf';
-        $upload_path = 'public/uploads/resumes/' . $new_file_name;
-
-        if (move_uploaded_file($file_tmp, $upload_path)) {
-            updateCandidateResume($conn, $_SESSION['candidate_id'], $upload_path);
-            $success = "Resume uploaded successfully!";
-            $candidate = getCandidateById($conn, $_SESSION['candidate_id']);
-        } else {
-            $error = "Failed to upload resume";
-        }
-    } else {
+    // Validate file upload
+    if (!isset($_FILES['resume'])) {
         $error = "Please select a file";
+        require_once 'app/views/candidate/resume.php';
+        mysqli_close($conn);
+        return;
+    }
+
+    // Validate file with Validator class
+    $validator->validateFile(
+        $_FILES['resume'],
+        'Resume',
+        ['pdf'],
+        5 * 1024 * 1024 // 5MB
+    );
+
+    if ($validator->hasErrors()) {
+        $error = $validator->getFirstError();
+        require_once 'app/views/candidate/resume.php';
+        mysqli_close($conn);
+        return;
+    }
+
+    $file_tmp = $_FILES['resume']['tmp_name'];
+    $new_file_name = 'resume_' . $_SESSION['candidate_id'] . '_' . time() . '.pdf';
+    $upload_path = 'public/uploads/resumes/' . $new_file_name;
+
+    // Ensure upload directory exists
+    $upload_dir = 'public/uploads/resumes/';
+    if (!is_dir($upload_dir)) {
+        mkdir($upload_dir, 0755, true);
+    }
+
+    if (move_uploaded_file($file_tmp, $upload_path)) {
+        // Delete old resume if exists
+        if (!empty($candidate['resume_path']) && file_exists($candidate['resume_path'])) {
+            unlink($candidate['resume_path']);
+        }
+
+        updateCandidateResume($conn, $_SESSION['candidate_id'], $upload_path);
+        $success = "Resume uploaded successfully!";
+        $candidate = getCandidateById($conn, $_SESSION['candidate_id']);
+    } else {
+        $error = "Failed to upload resume. Please check directory permissions.";
     }
 
     require_once 'app/views/candidate/resume.php';
