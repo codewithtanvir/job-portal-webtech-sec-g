@@ -139,27 +139,27 @@ if ($action == 'logout') {
 // handle forgot password action
 if ($action == 'forgot-password') {
     $email = trim($_POST['email']);
-    
+
     // validate email
     if (empty($email)) {
         $_SESSION['error'] = "Email is required";
         header("Location: ../../public/index.php?page=forgot-password");
         exit();
     }
-    
+
     // check if user exists
     $user = getUserByEmail($conn, $email);
-    
+
     if (!$user) {
         // dont reveal if email exists or not for security
         $_SESSION['success'] = "If your email is registered, you will receive a password reset link";
         header("Location: ../../public/index.php?page=forgot-password");
         exit();
     }
-    
+
     // generate reset token
     $token = bin2hex(random_bytes(32));
-    
+
     // save token to database
     if (setResetToken($conn, $user['id'], $token)) {
         // in real application, send email here
@@ -178,37 +178,37 @@ if ($action == 'reset-password') {
     $token = $_POST['token'];
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
-    
+
     // validate inputs
     if (empty($token) || empty($password) || empty($confirm_password)) {
         $_SESSION['error'] = "All fields are required";
         header("Location: ../../public/index.php?page=reset-password&token=" . $token);
         exit();
     }
-    
+
     // check if passwords match
     if ($password !== $confirm_password) {
         $_SESSION['error'] = "Passwords do not match";
         header("Location: ../../public/index.php?page=reset-password&token=" . $token);
         exit();
     }
-    
+
     // check password length
     if (strlen($password) < 6) {
         $_SESSION['error'] = "Password must be at least 6 characters";
         header("Location: ../../public/index.php?page=reset-password&token=" . $token);
         exit();
     }
-    
+
     // verify token
     $user = getUserByResetToken($conn, $token);
-    
+
     if (!$user) {
         $_SESSION['error'] = "Invalid or expired reset token";
         header("Location: ../../public/index.php?page=login");
         exit();
     }
-    
+
     // update password
     if (updatePassword($conn, $user['id'], $password)) {
         $_SESSION['success'] = "Password reset successful! You can now login";
@@ -219,5 +219,3 @@ if ($action == 'reset-password') {
     }
     exit();
 }
-
-?>

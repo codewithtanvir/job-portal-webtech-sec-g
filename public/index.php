@@ -35,11 +35,11 @@ switch ($page) {
     case 'admin-dashboard':
         include '../app/views/admin-dashboard.php';
         break;
-    
+
     case 'forgot-password':
         include '../app/views/forgot-password.php';
         break;
-    
+
     case 'reset-password':
         include '../app/views/reset-password.php';
         break;
