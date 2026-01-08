@@ -6,6 +6,7 @@ session_start();
 
 // include database connection
 require_once '../config/db.php';
+require_once '../app/helpers/auth.php';
 
 // get the page from url
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';

@@ -10,11 +10,8 @@
 
 <body>
     <?php
-    // check if user is admin
-    if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'admin') {
-        header("Location: index.php?page=login");
-        exit();
-    }
+    require_once '../app/helpers/auth.php';
+    requireRole('admin');
     ?>
 
     <nav class="navbar">

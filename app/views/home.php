@@ -18,8 +18,13 @@
                 <li><a href="index.php?page=home">Home</a></li>
                 <li><a href="index.php?page=jobs">Jobs</a></li>
                 <li><a href="index.php?page=about">About</a></li>
-                <li><a href="index.php?page=login">Login</a></li>
-                <li><a href="index.php?page=register" class="btn-register">Register</a></li>
+                <?php if (isLoggedIn()): ?>
+                    <li><a href="index.php?page=<?php echo $_SESSION['user_type']; ?>-dashboard">Dashboard</a></li>
+                    <li><a href="../app/controllers/UserController.php?action=logout">Logout</a></li>
+                <?php else: ?>
+                    <li><a href="index.php?page=login">Login</a></li>
+                    <li><a href="index.php?page=register" class="btn-register">Register</a></li>
+                <?php endif; ?>
             </ul>
         </div>
     </nav>

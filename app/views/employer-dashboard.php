@@ -10,11 +10,8 @@
 
 <body>
     <?php
-    // check if user is logged in and is employer
-    if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'employer') {
-        header("Location: index.php?page=login");
-        exit();
-    }
+    require_once '../app/helpers/auth.php';
+    requireRole('employer');
     ?>
 
     <nav class="navbar">

@@ -10,11 +10,8 @@
 
 <body>
     <?php
-    // check if user is logged in
-    if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'jobseeker') {
-        header("Location: index.php?page=login");
-        exit();
-    }
+    require_once '../app/helpers/auth.php';
+    requireRole('jobseeker');
     ?>
 
     <nav class="navbar">
